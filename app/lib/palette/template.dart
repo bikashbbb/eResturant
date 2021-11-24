@@ -31,14 +31,6 @@ Widget logintemplate() {
             )),
       ),
       Positioned(
-          top: 10.h,
-          left: 30.w,
-          child: SizedBox(
-            height: 250.h,
-            width: 300.h,
-            child: Image.asset('Assets/food1.png'),
-          )),
-      Positioned(
           right: 70.w,
           top: 650.h,
           child: Image.asset(

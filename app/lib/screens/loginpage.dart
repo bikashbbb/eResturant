@@ -1,8 +1,11 @@
+import 'package:app/domain/loginto.dart';
 import 'package:app/palette/buttons.dart';
 import 'package:app/palette/template.dart';
 import 'package:app/palette/textfields.dart';
 import 'package:app/palette/textstyles.dart';
+import 'package:app/providers/hiveprovider.dart';
 import 'package:app/providers/login.dart';
+import 'package:app/screens/myorders.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -19,6 +22,14 @@ class Login extends StatelessWidget {
           children: [
             logintemplate(),
             // hello welcome back
+            Positioned(
+                top: 10.h,
+                left: 30.w,
+                child: SizedBox(
+                  height: 250.h,
+                  width: 300.h,
+                  child: Image.asset('Assets/food1.png'),
+                )),
             Positioned(
               top: 230.h,
               left: 55.w,
