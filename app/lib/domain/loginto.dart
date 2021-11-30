@@ -4,12 +4,17 @@ import 'package:http/http.dart' as https;
 
 //String host;
 sendLoginRequest() async {
-  //https.post(url);
-  var response = await https.post(Uri.parse('https://erestuarantwebapi20211115232617.azurewebsites.net/api/user/login/loginuser'), body: {
-    'username': LoginController.usernameControlls.text,
-    'userpassword': LoginController.passwordControlls.text
-  });
-  return jsonDecode(response.body);
+  var requesturl = LoginController.baseurlControlls.text;
+  try {
+    var response =
+        await https.post(Uri.parse('$requesturl/user/login/loginuser'), body: {
+      'username': LoginController.usernameControlls.text,
+      'userpassword': LoginController.passwordControlls.text
+    });
+    return jsonDecode(response.body);
+  } catch (e) {
+    return false;
+  }
 }
 
 product(String endpoints) async {

@@ -1,23 +1,25 @@
+import 'package:app/domain/myorders.dart';
+import 'package:app/models/orders.dart';
 import 'package:app/screens/itemcatalog.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:flutter/material.dart';
 
 class AddOrdersController extends GetxController {
+  var quantitycontroller = TextEditingController();
   // hall infos
   String Hallcode = 'Hall Number';
   String tablecode = 'Table Number';
   String itemname = 'Item Name';
-  String Itemprice = '     Item Price';
+  //String Itemprice = '     Item Price';
   String quantity = 'Quantity';
   String tax = 'Tax';
-
-  // product info
-  int? productid;
-  int? productcatoid;
+  double amount = 0;
 
   // objects
   static var halldata = {};
   static var tabledata = {};
+  static List totalOrders = [];
 
   static AddOrdersController get to => Get.find();
 
@@ -33,7 +35,19 @@ class AddOrdersController extends GetxController {
   }
 
   void itemSelected() {
-    Get.to(ItemCatalog());
+    Get.to(const ItemCatalog());
+  }
+
+  void clearItems() {
+    Hallcode = 'Hall Number';
+    tablecode = 'Table Number';
+    itemname = 'Item Name';
+    //String Itemprice = '     Item Price';
+    quantity = 'Quantity';
+    tax = 'Tax';
+    amount = 0;
+    totalOrders = [];
+    update();
   }
 
   List<String> getHall() {
@@ -66,13 +80,97 @@ class AddOrdersController extends GetxController {
       required productcatid,
       required productprice,
       required producttax}) {
-    print(productname);
-    itemname = productname;
-    productid = profuctid;
-    productcatoid = productcatid;
-    productprice = productprice;
-    tax = producttax;
+    // save the list of response
+    var amount = double.parse(productprice) +
+        (double.parse(productprice) * double.parse(producttax) / 100);
+    totalOrders.add(ItemDetails(
+        profuctid,
+        productcatid,
+        double.parse(productprice),
+        double.parse(producttax),
+        productname,
+        1.0,
+        amount));
     update();
     Get.back(closeOverlays: true);
+  }
+
+  void getQuantity() {
+    /// takes in product price and returns the
+    if (totalOrders.isNotEmpty) {
+      var objecttochange = totalOrders[totalOrders.length - 1];
+      var quantity = double.parse(quantitycontroller.text);
+      objecttochange.quantity = quantity;
+      objecttochange.amount = (objecttochange.productprice +
+              (objecttochange.producttax * objecttochange.productprice / 100)) *
+          quantity;
+      update();
+    }
+  }
+
+  String getamount() {
+    if (totalOrders.isNotEmpty) {
+      double amount = 0.0;
+      for (var p in totalOrders) {
+        amount += p.amount;
+      }
+      return amount.toStringAsFixed(3);
+    }
+    return '0.0';
+  }
+
+  String gettotaltax() {
+    if (totalOrders.isNotEmpty) {
+      double totaltax = 0.0;
+      for (var p in totalOrders) {
+        totaltax += p.producttax;
+      }
+      return 'tax: ' + totaltax.toString();
+    }
+    return tax;
+  }
+
+  String gettotalprice() {
+    if (totalOrders.isNotEmpty) {
+      double price = 0.0;
+      for (var p in totalOrders) {
+        price += (p.productprice) * (p.quantity);
+      }
+      return 'price: ' + price.toStringAsFixed(3);
+    }
+    return 'Item price';
+  }
+
+  void createOrderClicked() async {
+    if (Hallcode == 'Hall Number' && tablecode[0] == 'T' && amount == 0.0) {
+      Get.dialog(const AlertDialog(
+        title: Text('Please select all the fields...'),
+      ));
+    } else {
+      CreatingOrder();
+      await sendOrderCreateRequest();
+    }
+  }
+
+  ordercreatedSucess() {
+    /* Get.snackbar('Adding Orders', 'Orders Added Sucessfully',
+        backgroundColor: Colors.black87, colorText: Colors.white); */
+  }
+
+  void CreatingOrder() {
+    Get.dialog(
+        AlertDialog(
+          backgroundColor: Colors.green.withOpacity(0.8),
+          title: const Text(
+            'Creating order...',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          actions: const [
+            CircularProgressIndicator(
+              color: Colors.white,
+            ),
+          ],
+        ),
+        barrierDismissible: false);
   }
 }

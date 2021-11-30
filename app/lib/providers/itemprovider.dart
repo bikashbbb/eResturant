@@ -32,7 +32,8 @@ class ItemController extends GetxController {
   }
 
   void subCategorySelected(item) {
-    AddOrdersController().getIteminfo(
+    var controller = Get.put(AddOrdersController());
+    controller.getIteminfo(
         productname: item['ProductName'],
         productprice: item['ProductPrice'],
         producttax: item['ProductTax'],

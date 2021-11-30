@@ -1,114 +1,216 @@
+import 'package:app/models/orders.dart';
 import 'package:app/palette/buttons.dart';
 import 'package:app/palette/textfields.dart';
 import 'package:app/palette/textstyles.dart';
 import 'package:app/providers/addorders.dart';
+import 'package:app/screens/myorders.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get.dart';
 
+// change geeting the data thing
 class AddOrders extends StatelessWidget {
+  var controller = Get.put(AddOrdersController());
+
   AddOrders({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.white,
-        floatingActionButton: ElevatedButton(
-            onPressed: () {
-              // TO THE ADD ITems page
-              Get.to(AddOrders());
-            },
-            child: Icon(
-              Icons.done_all,
-              color: Colors.white,
-              size: 30.h,
-            ),
-            style: ElevatedButton.styleFrom(
-              shape: const CircleBorder(),
-              padding: EdgeInsets.all(20.h),
-              primary: Colors.green,
-              onPrimary: Colors.red,
-            )),
-        appBar: AppBar(
-          backgroundColor: Colors.orange[300],
-          title: Text(
-            'Add Orders',
-            style: bold30,
-          ),
-        ),
-        body: GetBuilder<AddOrdersController>(
-            init: AddOrdersController(),
-            builder: (_) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // hall number
-                  selectHall(),
-                  selectTable(),
-                  // item name <------ navigate to category and sub category
+    return GetBuilder<AddOrdersController>(
+        init: AddOrdersController(),
+        builder: (_) {
+          return Scaffold(
+              persistentFooterButtons: [
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                          onPressed: () {
+                            // TO THE ADD ITems page
+                            _.itemSelected();
+                          },
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 30.h,
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            shape: const CircleBorder(),
+                            padding: EdgeInsets.all(20.h),
+                            primary: Colors.green,
+                            onPrimary: Colors.red,
+                          )),
+                      ElevatedButton(
+                          onPressed: () {
+                            // TO THE ADD ITems page
+                            _.clearItems();
+                          },
+                          child: Icon(
+                            Icons.clear,
+                            color: Colors.white,
+                            size: 30.h,
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            shape: const CircleBorder(),
+                            padding: EdgeInsets.all(20.h),
+                            primary: Colors.red,
+                            onPrimary: Colors.green,
+                          )),
+                      ElevatedButton(
+                          onPressed: () {
+                            // send add order request
+                            _.createOrderClicked();
+                          },
+                          child: Icon(
+                            Icons.done_all,
+                            color: Colors.white,
+                            size: 30.h,
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            shape: const CircleBorder(),
+                            padding: EdgeInsets.all(20.h),
+                            primary: Colors.green,
+                            onPrimary: Colors.red,
+                          )),
+                    ]),
+              ],
+              backgroundColor: Colors.white,
+              appBar: AppBar(
+                backgroundColor: Colors.orange[300],
+                title: Text(
+                  'Add Orders',
+                  style: bold30,
+                ),
+              ),
+              body: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // hall number
+                    selectHall(),
+                    selectTable(),
 
-                  Padding(
-                    padding: EdgeInsets.only(top: 15.h, left: 40.w),
-                    child: InkWell(
-                        onTap: () {
-                          _.itemSelected();
-                        },
-                        child: itemsbutton(_.itemname)),
-                  ),
-                  // item price
-                  Padding(
-                    padding: EdgeInsets.only(top: 15.h, right: 20.w),
-                    child: Center(child: orderFields(_.Itemprice)),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 15.h, right: 20.w),
-                    child: Center(child: textfield(_.quantity, isnum: true)),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 15.h, right: 20.w),
-                    child: Center(child: orderFields(_.tax)),
-                  ),
+                    Padding(
+                        padding: EdgeInsets.only(top: 15.h, left: 42.w),
+                        child: itemDetails()),
+                    // item price
+                    Padding(
+                      padding: EdgeInsets.only(top: 15.h, right: 20.w),
+                      child: Center(child: orderFields(_.gettotalprice())),
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsets.only(top: 15.h, left: 50.w, right: 65.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          quantityField(_.quantity,
+                              Controller: _.quantitycontroller, isnum: true),
+                          quantityButton()
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 15.h, right: 20.w),
+                      child: Center(child: orderFields(_.gettotaltax())),
+                    ),
 
-                  const Divider(
-                    height: 26,
-                    color: Colors.black54,
-                    thickness: 1,
-                  ),
-                  // Amount
-                  Padding(
-                    padding: EdgeInsets.only(left: 50.w),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: const [
-                        Text(
-                          'Amount :',
-                          style: TextStyle(
-                              color: Colors.black54,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25),
-                        ),
-                        Flexible(
-                          child: Text(
-                            'Rs ',
+                    const Divider(
+                      height: 26,
+                      color: Colors.black54,
+                      thickness: 1,
+                    ),
+                    // Amount
+                    Padding(
+                      padding: EdgeInsets.only(left: 50.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Amount :',
                             style: TextStyle(
                                 color: Colors.black54,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 23),
+                                fontSize: 25),
                           ),
-                        ),
-                      ],
-                    ),
-                  )
+                          Flexible(
+                            child: Text(
+                              _.getamount(),
+                              style: const TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 23),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ));
+        });
+  }
+
+  Widget quantityButton() {
+    return ElevatedButton(
+      onPressed: () {
+        controller.getQuantity();
+      },
+      child: Icon(
+        Icons.done_outline_rounded,
+        size: 28.h,
+        color: Colors.orange[200],
+      ),
+    );
+  }
+
+  Widget itemDetails() {
+    // listile which has listview builder
+    return GetBuilder<AddOrdersController>(
+        init: AddOrdersController(),
+        builder: (builder) {
+          return Container(
+            decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+            width: 280.w,
+            child: ExpansionTile(
+                initiallyExpanded: true,
+                children: [
+                  ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: AddOrdersController.totalOrders.length,
+                      itemBuilder: (cont, index) {
+                        return orderTile(
+                            AddOrdersController.totalOrders[index], index);
+                      })
                 ],
-              );
-            }));
+                title: const Text('Items')),
+          );
+        });
+  }
+
+  Widget orderTile(ItemDetails currentorder, inedex) {
+    // subtitle will have price and tax, leading will have quantity
+    return Padding(
+      padding: EdgeInsets.only(bottom: 2.h),
+      child: ListTile(
+        tileColor: Colors.black12,
+        title: Text(currentorder.productname),
+        trailing: Text(currentorder.productprice.toStringAsFixed(1) +
+            ' X ' +
+            currentorder.quantity.toString()),
+        subtitle: Row(
+          children: [
+            Expanded(child: Text('tax: ' + currentorder.producttax.toString())),
+            Expanded(child: Text(currentorder.amount.toStringAsFixed(1)))
+          ],
+        ),
+      ),
+    );
   }
 
   Widget selectHall() {
-    var controller = Get.put(AddOrdersController());
     return Padding(
       padding: EdgeInsets.only(top: 15.h),
       child: Center(
@@ -129,7 +231,6 @@ class AddOrders extends StatelessWidget {
   }
 
   Widget selectTable() {
-    var controller = Get.put(AddOrdersController());
     var table = controller.getTable();
     return Padding(
       padding: EdgeInsets.only(top: 15.h),

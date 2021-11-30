@@ -1,8 +1,5 @@
-import 'package:app/domain/loginto.dart';
-import 'package:app/palette/buttons.dart';
 import 'package:app/palette/template.dart';
 import 'package:app/palette/textstyles.dart';
-import 'package:app/providers/hiveprovider.dart';
 import 'package:app/providers/myordersc.dart';
 import 'package:app/screens/addorders.dart';
 import 'package:flutter/material.dart';
@@ -14,102 +11,124 @@ class MyOrders extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var controller = Get.put(MyOrdersControlls());
     return Scaffold(
-      floatingActionButton: Padding(
-        padding: EdgeInsets.only(bottom: 60.h, right: 10.h),
-        child: ElevatedButton(
-          onPressed: () {
-            Get.to(AddOrders());
-          },
-          child: const Icon(Icons.add, color: Colors.white),
-          style: ElevatedButton.styleFrom(
-            shape: const CircleBorder(),
-            padding: EdgeInsets.all(20.h),
-            primary: Colors.green,
-            onPrimary: Colors.red,
+        floatingActionButton: Padding(
+          padding: EdgeInsets.only(bottom: 60.h, right: 10.h),
+          child: ElevatedButton(
+            onPressed: () {
+              Get.to(AddOrders());
+            },
+            child: const Icon(Icons.add, color: Colors.white),
+            style: ElevatedButton.styleFrom(
+              shape: const CircleBorder(),
+              padding: EdgeInsets.all(20.h),
+              primary: Colors.green,
+              onPrimary: Colors.red,
+            ),
           ),
         ),
-      ),
-      body: Stack(
-        children: [
-          logintemplate(),
-          Positioned(
-            top: MediaQuery.of(context).padding.top,
-            child: Material(
-              elevation: 2.0,
-              child: Container(
-                color: Colors.orange[400],
-                height: 50.h,
-                width: MediaQuery.of(context).size.width,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 15.w),
-                      child: Text(
-                        'Orders',
-                        style: bold30,
-                      ),
-                    ),
-                    // Todo : have get data and login here
-                    Padding(
-                      padding: const EdgeInsets.only(left: 100),
-                      child: InkWell(
-                        onTap: () {
-                          MyOrdersControlls.settingTapped();
-                        },
-                        child: Icon(Icons.settings),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-              top: 85.h,
-              child: Container(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      // coming from backend in a stream with getx
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [OrderCards(), OrderCards()],
-                      )
-                    ],
-                  ),
-                ),
-                color: Colors.white,
-                height: 650.h,
-                width: MediaQuery.of(context).size.width,
-              )),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+        body: GetBuilder<MyOrdersControlls>(
+          init: MyOrdersControlls(),
+          builder: (builder) {
+            return Stack(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'No Orders found  ',
-                      style: bold30,
+                logintemplate(),
+                Positioned(
+                  top: MediaQuery.of(context).padding.top,
+                  child: Material(
+                    elevation: 2.0,
+                    child: Container(
+                      color: Colors.orange[400],
+                      height: 50.h,
+                      width: MediaQuery.of(context).size.width,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 15.w),
+                            child: Text(
+                              'Orders',
+                              style: bold30,
+                            ),
+                          ),
+                          Padding(
+                              padding: const EdgeInsets.only(left: 100),
+                              child: DropdownButton<String>(
+                                hint: const Icon(Icons.settings),
+                                onChanged: (selected) {
+                                  if (selected != 'Logout') {
+                                    controller.formatData(context);
+                                  } else {
+                                    controller.Logout(context);
+                                  }
+                                },
+                                items: <String>[
+                                  'Logout',
+                                  'Format data'
+                                ].map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              ))
+                        ],
+                      ),
                     ),
-                    //RefreshIndicator(child: child, onRefresh: onRefresh)
-                  ],
-                ),
-                const InkWell(
-                  child: Text(
-                    'Retry?',
-                    style: TextStyle(color: Colors.green, fontSize: 20),
                   ),
-                )
+                ),
+                Positioned(
+                    top: 85.h,
+                    child: Container(
+                      child: GridView.builder(
+                          // have a streambuilder
+                          itemCount: builder.activeorderlist.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 25 / 20,
+                          ),
+                          itemBuilder: (contex, index) {
+                            return OrderCards();
+                          }),
+                      color: Colors.white,
+                      height: 650.h,
+                      width: MediaQuery.of(context).size.width,
+                    )),
+                builder.isActiveorder
+                    ? SizedBox()
+                    : Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'No Orders found  ',
+                                  style: bold30,
+                                ),
+                                //RefreshIndicator(child: child, onRefresh: onRefresh)
+                              ],
+                            ),
+                            InkWell(
+                              onTap: () {
+                                builder.retry();
+                              },
+                              child: const Text(
+                                'Retry?',
+                                style: TextStyle(
+                                    color: Colors.green, fontSize: 20),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
               ],
-            ),
-          ),
-        ],
-      ),
-    );
+            );
+          },
+        ));
   }
 
   Widget OrderCards() {

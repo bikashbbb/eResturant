@@ -1,8 +1,20 @@
-class OrderDetails {
-  String totalPrice;
-  String time;
-  String tableNum;
-  // other fields also..
+class ItemDetails {
+  int productid;
+  int productCatid;
+  double productprice;
+  double producttax;
+  var productname;
+  double quantity;
+  double amount;
 
-  OrderDetails({this.totalPrice = '', this.time = '', this.tableNum = ''});
+  ItemDetails(this.productCatid, this.productid, this.productprice,
+      this.producttax, this.productname, this.quantity, this.amount);
+}
+
+class ActiveOrders {
+  String amount;
+  String orderedtime;
+  String tableno;
+
+  ActiveOrders(this.amount, this.orderedtime, this.tableno);
 }

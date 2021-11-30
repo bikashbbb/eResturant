@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 class LoginController extends GetxController {
-
   static var baseurlControlls = TextEditingController();
   static var usernameControlls = TextEditingController();
   static var passwordControlls = TextEditingController();
@@ -25,21 +24,28 @@ class LoginController extends GetxController {
       isloading = true;
       update();
       var responsebody = await sendLoginRequest();
-      if (responsebody['LoginStatus']) {
-        // save the data
-        var box = Hive.box('appData');
-        await box.put('userdata', {
-          'username': usernameControlls.text,
-          'password': passwordControlls.text,
-          'Userid': responsebody['UserId'].toString()
-        });
-        // save data
-        LocalData.saveProductData();
-        Get.off(const MyOrders());
+      if (responsebody.runtimeType != bool) {
+        if (responsebody['LoginStatus']) {
+          // save the data
+          var box = Hive.box('appData');
+          await box.put('userdata', {
+            'username': usernameControlls.text,
+            'password': passwordControlls.text,
+            'baseUrl': baseurlControlls.text,
+            'Userid': responsebody['UserId'].toString()
+          });
+          // save data
+          LocalData.saveProductData();
+          Get.off(const MyOrders());
+        } else {
+          isloading = false;
+          update();
+          dialogbox(context, 'Username or password invalid');
+        }
       } else {
         isloading = false;
         update();
-        dialogbox(context, 'Username or password invalid');
+        dialogbox(context, 'Invalid base url');
       }
     }
   }
