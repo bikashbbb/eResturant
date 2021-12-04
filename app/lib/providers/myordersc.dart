@@ -1,13 +1,19 @@
-
 import 'package:app/domain/myorders.dart';
 import 'package:app/models/orders.dart';
 import 'package:app/palette/dialogbox.dart';
 import 'package:app/providers/hiveprovider.dart';
 import 'package:app/screens/loginpage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class MyOrdersControlls extends GetxController {
+  @override
+  void onInit() {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    super.onInit();
+  }
+
   static var iscompleted = false;
 
   List<ActiveOrders> activeorderlist = [];

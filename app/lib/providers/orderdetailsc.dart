@@ -11,12 +11,6 @@ import 'package:get/get.dart';
 
 class OrderDetailsControlls extends GetxController {
   TextEditingController quantityControll = TextEditingController();
-  @override
-  void dispose() {
-    Get.deleteAll();
-    quantityControll.dispose();
-    super.dispose();
-  }
 
   static CreateOrderBody? items;
   List<OrderInvoiceItem> totalOrders = [];
@@ -168,7 +162,10 @@ class OrderDetailsControlls extends GetxController {
 
         if (response['CANREMOVEITEM']) {
           saveUserRights(response['CANREMOVEITEM']);
+          Get.back();
+          removeItemRequest();
         } else {
+          Get.back();
           bottomNavbar('You dont have item remove rights', false);
         }
       }
@@ -187,6 +184,7 @@ class OrderDetailsControlls extends GetxController {
       Get.back();
       bottomNavbar('Item deleted Sucessfully', true);
     } else {
+      Get.back();
       bottomNavbar('Unkown error', true);
     }
   }

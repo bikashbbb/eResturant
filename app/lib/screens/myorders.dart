@@ -95,16 +95,19 @@ class _MyOrdersState extends State<MyOrders> {
                           stream: builder.getOrders(),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
-                              return GridView.builder(
-                                  itemCount: snapshot.data!.length,
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    childAspectRatio: 25 / 20,
-                                  ),
-                                  itemBuilder: (contex, index) {
-                                    return OrderCards(snapshot.data![index]);
-                                  });
+                              return OrientationBuilder(
+                                  builder: (context, orientation) {
+                                return GridView.builder(
+                                    itemCount: snapshot.data!.length,
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      childAspectRatio: 25 / 20,
+                                    ),
+                                    itemBuilder: (contex, index) {
+                                      return OrderCards(snapshot.data![index]);
+                                    });
+                              });
                             } else {
                               return noActiveOrders(builder);
                             }

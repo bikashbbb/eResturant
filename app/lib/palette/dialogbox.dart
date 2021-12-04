@@ -75,7 +75,8 @@ void CreatingOrder(String title) {
       backgroundColor: Colors.green.withOpacity(0.8),
       title: Text(
         title,
-        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        style:
+            const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
       actions: const [
         CircularProgressIndicator(

@@ -24,7 +24,7 @@ class ItemCatalog extends StatelessWidget {
                 left: 0.h,
                 top: 30.h,
                 child: Container(
-                  width: 160.w,
+                  width: 120.w,
                   color: Colors.orange[300],
                   child: Center(
                     child: Text(
@@ -38,8 +38,9 @@ class ItemCatalog extends StatelessWidget {
               child: Container(
                 color: Colors.black.withOpacity(0.08),
                 height: 800.h,
-                width: 160.w,
+                width: 120.w,
                 child: ListView.builder(
+                    shrinkWrap: true,
                     itemCount: controller.getCategory().length,
                     itemBuilder: (contxt, index) {
                       return categoryBuilder(controller.getCategory()[index],
@@ -50,16 +51,16 @@ class ItemCatalog extends StatelessWidget {
             // subcategory
             Positioned(
                 top: 5.h,
-                left: 160.w,
+                left: 120.w,
                 child: Container(
                   color: Colors.white24, //Colors.black.withOpacity(0.08),
                   height: MediaQuery.of(context).size.height - 20.h,
-                  width: MediaQuery.of(context).size.width - 160.w,
+                  width: MediaQuery.of(context).size.width - 120.w,
                   child: GridView.builder(
                       itemCount: controller.getSubcategory().length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
+                        crossAxisCount: 3,
                         childAspectRatio: 25 / 20,
                       ),
                       itemBuilder: (contex, index) {
@@ -82,7 +83,7 @@ class ItemCatalog extends StatelessWidget {
         padding: EdgeInsets.only(bottom: 5.h),
         child: Container(
           color: index == selectedindex ? Colors.black12 : Colors.black54,
-          width: 160.w,
+          width: 70.w,
           height: 70.h,
           child: Center(
               child: Text(
@@ -117,8 +118,8 @@ class ItemCatalog extends StatelessWidget {
                       item[index]['ProductName'],
                       style: TextStyle(
                           color: Colors.black,
-                          fontWeight: FontWeight.w300,
-                          fontSize: 18.sp),
+                          fontWeight: FontWeight.w400,
+                          fontSize: 15.sp),
                     ),
                   ),
                 ],

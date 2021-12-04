@@ -46,7 +46,7 @@ class Login extends StatelessWidget {
     return GetBuilder<LoginController>(
         init: LoginController(),
         builder: (_) {
-          return Container(
+          return SizedBox(
             height: 350.h,
             width: 300.w,
             child: Card(
