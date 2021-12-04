@@ -1,7 +1,5 @@
-import 'package:app/providers/addorders.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 
 Widget textfield(String hinttext, {Controller, isnum = false}) {
   return SizedBox(

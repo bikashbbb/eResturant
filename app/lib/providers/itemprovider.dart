@@ -1,4 +1,5 @@
 import 'package:app/providers/addorders.dart';
+import 'package:app/providers/orderdetailsc.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
@@ -31,13 +32,23 @@ class ItemController extends GetxController {
     update();
   }
 
-  void subCategorySelected(item) {
-    var controller = Get.put(AddOrdersController());
-    controller.getIteminfo(
-        productname: item['ProductName'],
-        productprice: item['ProductPrice'],
-        producttax: item['ProductTax'],
-        productcatid: item['ProductCategoryId'],
-        profuctid: item['ProductId']);
+  void subCategorySelected(item, {isupdated}) {
+    OrderDetailsControlls controller = Get.put(OrderDetailsControlls());
+    var con = Get.put(AddOrdersController());
+    if (isupdated) {
+      controller.getIteminfo(
+          productname: item['ProductName'],
+          productprice: item['ProductPrice'],
+          producttax: item['ProductTax'],
+          productcatid: item['ProductCategoryId'],
+          profuctid: item['ProductId']);
+    } else {
+      con.getIteminfo(
+          productname: item['ProductName'],
+          productprice: item['ProductPrice'],
+          producttax: item['ProductTax'],
+          productcatid: item['ProductCategoryId'],
+          profuctid: item['ProductId']);
+    }
   }
 }

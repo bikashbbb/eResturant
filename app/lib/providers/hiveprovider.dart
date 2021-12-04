@@ -4,9 +4,43 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
 class LocalData {
-  static getBaseUrl() {
-    var box = Hive.box('appData');
+  static var box = Hive.box('appData');
 
+  static String getProductName(int ProductId) {
+    var box = Hive.box('subcategory');
+    for (var p in box.get('ProductCategoryId')) {
+      if (p['ProductId'] == ProductId) {
+        return p['ProductName'];
+      }
+    }
+    return 'eerror';
+  }
+
+  static getHallcode(int hallid) {
+    var box = Hive.box('Halls');
+    List data = box.get('HallsId');
+
+    for (var p in data) {
+      if (p['HallId'] == hallid) {
+        return p['HallCode'];
+      }
+    }
+    return 'errro';
+  }
+
+  static getTablecode(int tableids) {
+    var box = Hive.box('Tables');
+    List data = box.get('TableIds');
+
+    for (var p in data) {
+      if (p['TableId'] == tableids) {
+        return p['TableCode'];
+      }
+    }
+    return 'errro';
+  }
+
+  static getBaseUrl() {
     return box.get('userdata')['baseUrl'];
   }
 
@@ -53,4 +87,20 @@ getUserid() {
   return userdata['Userid'];
 }
 
-createOrderBody() {}
+var box = Hive.box('appData');
+
+bool haspermission() {
+  if (box.containsKey('CANREMOVEITEMS')) {
+    return true;
+  }
+  return false;
+}
+
+/// check if user can remove items.
+bool checkuserpermission() {
+  return box.get('CANREMOVEITEMS');
+}
+
+void saveUserRights(bool canSave) async {
+  await box.put('CANREMOVEITEMS', canSave);
+}

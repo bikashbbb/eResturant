@@ -1,3 +1,4 @@
+
 import 'package:app/domain/myorders.dart';
 import 'package:app/models/orders.dart';
 import 'package:app/palette/dialogbox.dart';
@@ -8,7 +9,7 @@ import 'package:get/get.dart';
 
 class MyOrdersControlls extends GetxController {
   static var iscompleted = false;
-  bool isActiveorder = false;
+
   List<ActiveOrders> activeorderlist = [];
 
   void formatData(context) {
@@ -22,17 +23,17 @@ class MyOrdersControlls extends GetxController {
     update();
   }
 
-  getOrders() async {
-    // todo: get all the orders
-    var response = await getActiveOrders();
-    //activeorderlist.add(ActiveOrders(amount, orderedtime, tableno))
+  Stream<List> getOrders() async* {
+    yield* Stream.periodic(const Duration(milliseconds: 100), (timer) async {
+      var response = await getActiveOrders();
+
+      return response;
+    }).asyncMap((event) {
+      return event;
+    });
   }
 
-  retry() async {
-    await getOrders();
-  }
-
-  void Logout(BuildContext context) {
+  void logout(BuildContext context) {
     Get.offAll(const Login());
   }
 }

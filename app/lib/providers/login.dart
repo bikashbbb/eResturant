@@ -18,7 +18,7 @@ class LoginController extends GetxController {
   void loginTapped(BuildContext context) async {
     if (baseurlControlls.text == '' ||
         usernameControlls.text == '' ||
-        passwordControlls == '') {
+        passwordControlls.text == '') {
       dialogbox(context, 'Fields cannot be empty !!');
     } else {
       isloading = true;

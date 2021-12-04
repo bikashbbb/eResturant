@@ -1,7 +1,7 @@
-import 'package:app/models/orders.dart';
+import 'package:app/models/orderdetailsm.dart';
 import 'package:app/palette/textfields.dart';
 import 'package:app/palette/textstyles.dart';
-import 'package:app/providers/addorders.dart';
+import 'package:app/providers/orderdetailsc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,15 +9,15 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get.dart';
 
 // change geeting the data thing
-class AddOrders extends StatelessWidget {
-  var controller = Get.put(AddOrdersController());
+class OrderDetailsPage extends StatelessWidget {
+  var controller = Get.put(OrderDetailsControlls());
 
-  AddOrders({Key? key}) : super(key: key);
+  OrderDetailsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<AddOrdersController>(
-        init: AddOrdersController(),
+    return GetBuilder<OrderDetailsControlls>(
+        init: OrderDetailsControlls(),
         builder: (_) {
           return Scaffold(
               persistentFooterButtons: [
@@ -27,7 +27,7 @@ class AddOrders extends StatelessWidget {
                       ElevatedButton(
                           onPressed: () {
                             // TO THE ADD ITems page
-                            _.itemSelected();
+                            _.addItemClicked();
                           },
                           child: Icon(
                             Icons.add,
@@ -42,24 +42,7 @@ class AddOrders extends StatelessWidget {
                           )),
                       ElevatedButton(
                           onPressed: () {
-                            // TO THE ADD ITems page
-                            _.clearItems();
-                          },
-                          child: Icon(
-                            Icons.clear,
-                            color: Colors.white,
-                            size: 30.h,
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            shape: const CircleBorder(),
-                            padding: EdgeInsets.all(20.h),
-                            primary: Colors.red,
-                            onPrimary: Colors.green,
-                          )),
-                      ElevatedButton(
-                          onPressed: () {
-                            // send add order request
-                            _.createOrderClicked();
+                            _.updateOrderCLicked();
                           },
                           child: Icon(
                             Icons.done_all,
@@ -78,7 +61,7 @@ class AddOrders extends StatelessWidget {
               appBar: AppBar(
                 backgroundColor: Colors.orange[300],
                 title: Text(
-                  'Add Orders',
+                  'Update Order',
                   style: bold30,
                 ),
               ),
@@ -91,7 +74,7 @@ class AddOrders extends StatelessWidget {
                     selectTable(),
 
                     Padding(
-                        padding: EdgeInsets.only(top: 15.h, left: 42.w),
+                        padding: EdgeInsets.only(top: 15.h, left: 50.w),
                         child: itemDetails()),
                     // item price
                     Padding(
@@ -105,14 +88,14 @@ class AddOrders extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           quantityField(_.quantity,
-                              Controller: _.quantitycontroller, isnum: true),
+                              isnum: true, Controller: _.quantityControll),
                           quantityButton()
                         ],
                       ),
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 15.h, right: 20.w),
-                      child: Center(child: orderFields(_.gettotaltax())),
+                      child: Center(child: orderFields(_.getTotalTax())),
                     ),
 
                     const Divider(
@@ -135,7 +118,7 @@ class AddOrders extends StatelessWidget {
                           ),
                           Flexible(
                             child: Text(
-                              _.getamount(),
+                              _.getNetAmount(),
                               style: const TextStyle(
                                   color: Colors.black54,
                                   fontWeight: FontWeight.bold,
@@ -154,9 +137,7 @@ class AddOrders extends StatelessWidget {
   Widget quantityButton() {
     return ElevatedButton(
       onPressed: () {
-        if (controller.quantitycontroller.text != '') {
-          controller.getQuantity();
-        }
+        controller.quantityCLicked();
       },
       child: Icon(
         Icons.done_outline_rounded,
@@ -168,41 +149,45 @@ class AddOrders extends StatelessWidget {
 
   Widget itemDetails() {
     // listile which has listview builder
-    return GetBuilder<AddOrdersController>(
-        init: AddOrdersController(),
-        builder: (builder) {
-          return Container(
-            decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-            width: 280.w,
-            child: ExpansionTile(
-                initiallyExpanded: true,
-                children: [
-                  ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: AddOrdersController.totalOrders.length,
-                      itemBuilder: (cont, index) {
-                        return orderTile(
-                            AddOrdersController.totalOrders[index], index);
-                      })
-                ],
-                title: const Text('Items')),
-          );
-        });
+
+    return Container(
+      decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+      width: 280.w,
+      child: ExpansionTile(
+          initiallyExpanded: true,
+          children: [
+            ListView.builder(
+                shrinkWrap: true,
+                itemCount: controller.getitemCount(),
+                itemBuilder: (cont, index) {
+                  return orderTile(controller.allOrderedItems()[index], index);
+                })
+          ],
+          title: const Text('Items')),
+    );
   }
 
-  Widget orderTile(ItemDetails currentorder, inedex) {
+  Widget orderTile(OrderInvoiceItem currentorder, int inedex) {
     // subtitle will have price and tax, leading will have quantity
     return Padding(
       padding: EdgeInsets.only(bottom: 2.h),
       child: ListTile(
-        tileColor: Colors.black12,
-        title: Text(currentorder.productname),
-        trailing: Text(currentorder.productprice.toStringAsFixed(1) +
+        onLongPress: () {
+          controller.removeItemClicked(inedex);
+        },
+        onTap: () {
+          controller.itemTapped(inedex);
+        },
+        tileColor: controller.tappedItem == inedex
+            ? Colors.green[200]
+            : Colors.black12,
+        title: Text(controller.getProductName(currentorder.ProductId)),
+        trailing: Text(currentorder.UnitPrice.toStringAsFixed(1) +
             ' X ' +
-            currentorder.quantity.toString()),
+            currentorder.Quantity.toString()),
         subtitle: Row(
           children: [
-            Expanded(child: Text('tax: ' + currentorder.producttax.toString())),
+            Expanded(child: Text('tax: ' + currentorder.TaxAmount.toString())),
             Expanded(child: Text(currentorder.amount.toStringAsFixed(1)))
           ],
         ),
@@ -214,39 +199,15 @@ class AddOrders extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(top: 15.h),
       child: Center(
-          child: DropdownButton<String>(
-        hint: orderFields(controller.Hallcode),
-        onChanged: (selected) {
-          controller.hallSelected(selected);
-        },
-        items:
-            controller.getHall().map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-      )),
+        child: Text(controller.getHalls()),
+      ),
     );
   }
 
   Widget selectTable() {
-    var table = controller.getTable();
     return Padding(
       padding: EdgeInsets.only(top: 15.h),
-      child: Center(
-          child: DropdownButton<String>(
-        hint: orderFields(controller.tablecode),
-        onChanged: (selected) {
-          controller.tableSelected(selected);
-        },
-        items: table.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-      )),
+      child: Center(child: Text(controller.getTables())),
     );
   }
 

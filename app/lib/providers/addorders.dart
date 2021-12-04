@@ -1,5 +1,7 @@
 import 'package:app/domain/myorders.dart';
 import 'package:app/models/orders.dart';
+import 'package:app/palette/dialogbox.dart';
+import 'package:app/providers/hiveprovider.dart';
 import 'package:app/screens/itemcatalog.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -35,7 +37,7 @@ class AddOrdersController extends GetxController {
   }
 
   void itemSelected() {
-    Get.to(const ItemCatalog());
+    Get.to(ItemCatalog());
   }
 
   void clearItems() {
@@ -84,8 +86,8 @@ class AddOrdersController extends GetxController {
     var amount = double.parse(productprice) +
         (double.parse(productprice) * double.parse(producttax) / 100);
     totalOrders.add(ItemDetails(
-        profuctid,
         productcatid,
+        profuctid,
         double.parse(productprice),
         double.parse(producttax),
         productname,
@@ -147,30 +149,25 @@ class AddOrdersController extends GetxController {
         title: Text('Please select all the fields...'),
       ));
     } else {
-      CreatingOrder();
-      await sendOrderCreateRequest();
+      CreatingOrder('Creating Order');
+      var body = CreateOrderBody(
+              HallId: halldata[Hallcode],
+              TableId: tabledata[tablecode],
+              UserId: getUserid(),
+              NetAmount: getamount(),
+              NetTax: gettotaltax(),
+              InvoiceItems: invoiceItems(totalOrders))
+          .createOrderbody();
+      var response = await sendOrderCreateRequest(body);
+
+      Navigator.of(Get.overlayContext!).pop();
+
+      if (response[0] != 'S' || response[0] != 's') {
+        clearItems();
+        isordercreatedSucess('Orders Added Sucessfully');
+      } else {
+        isordercreatedSucess('Unknown server error.');
+      }
     }
-  }
-
-  ordercreatedSucess() {
-    /* Get.snackbar('Adding Orders', 'Orders Added Sucessfully',
-        backgroundColor: Colors.black87, colorText: Colors.white); */
-  }
-
-  void CreatingOrder() {
-    Get.dialog(
-        AlertDialog(
-          backgroundColor: Colors.green.withOpacity(0.8),
-          title: const Text(
-            'Creating order...',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          actions: const [
-            CircularProgressIndicator(
-              color: Colors.white,
-            ),
-          ],
-        ),
-        barrierDismissible: false);
   }
 }

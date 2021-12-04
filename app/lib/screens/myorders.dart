@@ -1,14 +1,23 @@
+import 'package:app/models/orders.dart';
 import 'package:app/palette/template.dart';
 import 'package:app/palette/textstyles.dart';
+import 'package:app/providers/hiveprovider.dart';
 import 'package:app/providers/myordersc.dart';
+import 'package:app/providers/orderdetailsc.dart';
 import 'package:app/screens/addorders.dart';
+import 'package:app/screens/orderdetails.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-class MyOrders extends StatelessWidget {
+class MyOrders extends StatefulWidget {
   const MyOrders({Key? key}) : super(key: key);
 
+  @override
+  State<MyOrders> createState() => _MyOrdersState();
+}
+
+class _MyOrdersState extends State<MyOrders> {
   @override
   Widget build(BuildContext context) {
     var controller = Get.put(MyOrdersControlls());
@@ -60,7 +69,7 @@ class MyOrders extends StatelessWidget {
                                   if (selected != 'Logout') {
                                     controller.formatData(context);
                                   } else {
-                                    controller.Logout(context);
+                                    controller.logout(context);
                                   }
                                 },
                                 items: <String>[
@@ -78,74 +87,76 @@ class MyOrders extends StatelessWidget {
                     ),
                   ),
                 ),
+                // streams
                 Positioned(
                     top: 85.h,
                     child: Container(
-                      child: GridView.builder(
-                          // have a streambuilder
-                          itemCount: builder.activeorderlist.length,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 25 / 20,
-                          ),
-                          itemBuilder: (contex, index) {
-                            return OrderCards();
+                      child: StreamBuilder<List>(
+                          stream: builder.getOrders(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return GridView.builder(
+                                  itemCount: snapshot.data!.length,
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    childAspectRatio: 25 / 20,
+                                  ),
+                                  itemBuilder: (contex, index) {
+                                    return OrderCards(snapshot.data![index]);
+                                  });
+                            } else {
+                              return noActiveOrders(builder);
+                            }
                           }),
                       color: Colors.white,
                       height: 650.h,
                       width: MediaQuery.of(context).size.width,
                     )),
-                builder.isActiveorder
-                    ? SizedBox()
-                    : Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'No Orders found  ',
-                                  style: bold30,
-                                ),
-                                //RefreshIndicator(child: child, onRefresh: onRefresh)
-                              ],
-                            ),
-                            InkWell(
-                              onTap: () {
-                                builder.retry();
-                              },
-                              child: const Text(
-                                'Retry?',
-                                style: TextStyle(
-                                    color: Colors.green, fontSize: 20),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
               ],
             );
           },
         ));
   }
 
-  Widget OrderCards() {
+  Widget noActiveOrders(builder) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'No Orders found  ',
+                style: bold30,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget OrderCards(Map data) {
+    ActiveOrders ordertable = ActiveOrders(data['NetAmount'],
+        LocalData.getTablecode(data['TableId']), data['OrderId']);
+
     return Padding(
       padding: EdgeInsets.all(8.0.h),
-      child: Container(
-          height: 200.h,
-          width: 170.w,
-          child: Card(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(
-                  onTap: () {
-                    print('tapped');
-                  },
-                  child: Row(
+      child: InkWell(
+        onTap: () {
+          OrderDetailsControlls.getOrderobject(data);
+          Get.to(OrderDetailsPage());
+        },
+        child: SizedBox(
+            height: 200.h,
+            width: 170.w,
+            child: Card(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Text(
@@ -161,38 +172,37 @@ class MyOrders extends StatelessWidget {
                       )
                     ],
                   ),
-                ),
-                Text(
-                  'Rs 161.0',
-                  style: bold30,
-                ),
-                Text(
-                  ' 11:00 pm',
-                  style: bold30,
-                ),
-                Container(
-                  alignment: Alignment(0.1, 0.1),
-                  width: 170.w,
-                  height: 33.h,
-                  color: Colors.orange[400],
-                  child: const Text(
-                    'Gents 01',
+                  Text(
+                    ordertable.amount.toString(),
                     style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15),
+                        color: Colors.green[300],
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold),
                   ),
-                )
-              ],
-            ),
-            elevation: 3.0,
-            shape: RoundedRectangleBorder(
-              side: BorderSide(
-                color: Colors.black,
-                width: 0.5.w,
+                  Container(
+                    alignment: const Alignment(0.1, 0.1),
+                    width: 170.w,
+                    height: 33.h,
+                    color: Colors.orange[400],
+                    child: Text(
+                      ordertable.tablecode,
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17),
+                    ),
+                  )
+                ],
               ),
-            ),
-          )),
+              elevation: 3.0,
+              shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  color: Colors.black,
+                  width: 0.5.w,
+                ),
+              ),
+            )),
+      ),
     );
   }
 }
