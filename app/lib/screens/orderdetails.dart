@@ -24,7 +24,7 @@ class OrderDetailsPage extends StatelessWidget {
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ElevatedButton(
+                       ElevatedButton(
                           onPressed: () {
                             // TO THE ADD ITems page
                             _.addItemClicked();

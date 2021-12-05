@@ -21,105 +21,109 @@ class _MyOrdersState extends State<MyOrders> {
   @override
   Widget build(BuildContext context) {
     var controller = Get.put(MyOrdersControlls());
-    return Scaffold(
-        floatingActionButton: Padding(
-          padding: EdgeInsets.only(bottom: 60.h, right: 10.h),
-          child: ElevatedButton(
-            onPressed: () {
-              Get.to(AddOrders());
-            },
-            child: const Icon(Icons.add, color: Colors.white),
-            style: ElevatedButton.styleFrom(
-              shape: const CircleBorder(),
-              padding: EdgeInsets.all(20.h),
-              primary: Colors.green,
-              onPrimary: Colors.red,
-            ),
-          ),
-        ),
-        body: GetBuilder<MyOrdersControlls>(
-          init: MyOrdersControlls(),
-          builder: (builder) {
-            return Stack(
-              children: [
-                logintemplate(),
-                Positioned(
-                  top: MediaQuery.of(context).padding.top,
-                  child: Material(
-                    elevation: 2.0,
-                    child: Container(
-                      color: Colors.orange[400],
-                      height: 50.h,
-                      width: MediaQuery.of(context).size.width,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 15.w),
-                            child: Text(
-                              'Orders',
-                              style: bold30,
+    return GetBuilder<MyOrdersControlls>(
+        init: MyOrdersControlls(),
+        builder: (builder) {
+          return Scaffold(
+              floatingActionButton: MyOrdersControlls.isgetreqSent
+                  ? Padding(
+                      padding: EdgeInsets.only(bottom: 60.h, right: 10.h),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Get.to(AddOrders());
+                        },
+                        child: const Icon(Icons.add, color: Colors.white),
+                        style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          padding: EdgeInsets.all(20.h),
+                          primary: Colors.green,
+                          onPrimary: Colors.red,
+                        ),
+                      ),
+                    )
+                  : const Text(
+                      'getting orders first.',
+                      style: TextStyle(color: Colors.white),
+                    ),
+              body: Stack(
+                children: [
+                  logintemplate(),
+                  Positioned(
+                    top: MediaQuery.of(context).padding.top,
+                    child: Material(
+                      elevation: 2.0,
+                      child: Container(
+                        color: Colors.orange[400],
+                        height: 50.h,
+                        width: MediaQuery.of(context).size.width,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 15.w),
+                              child: Text(
+                                'Orders',
+                                style: bold30,
+                              ),
                             ),
-                          ),
-                          Padding(
-                              padding: const EdgeInsets.only(left: 100),
-                              child: DropdownButton<String>(
-                                hint: const Icon(Icons.settings),
-                                onChanged: (selected) {
-                                  if (selected != 'Logout') {
-                                    controller.formatData(context);
-                                  } else {
-                                    controller.logout(context);
-                                  }
-                                },
-                                items: <String>[
-                                  'Logout',
-                                  'Format data'
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                              ))
-                        ],
+                            Padding(
+                                padding: const EdgeInsets.only(left: 100),
+                                child: DropdownButton<String>(
+                                  hint: const Icon(Icons.settings),
+                                  onChanged: (selected) {
+                                    if (selected != 'Logout') {
+                                      controller.formatData(context);
+                                    } else {
+                                      controller.logout(context);
+                                    }
+                                  },
+                                  items: <String>['Logout', 'Format data']
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ))
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                // streams
-                Positioned(
-                    top: 85.h,
-                    child: Container(
-                      child: StreamBuilder<List>(
-                          stream: builder.getOrders(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return OrientationBuilder(
-                                  builder: (context, orientation) {
-                                return GridView.builder(
-                                    itemCount: snapshot.data!.length,
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      childAspectRatio: 25 / 20,
-                                    ),
-                                    itemBuilder: (contex, index) {
-                                      return OrderCards(snapshot.data![index]);
-                                    });
-                              });
-                            } else {
-                              return noActiveOrders(builder);
-                            }
-                          }),
-                      color: Colors.white,
-                      height: 650.h,
-                      width: MediaQuery.of(context).size.width,
-                    )),
-              ],
-            );
-          },
-        ));
+                  // streams
+                  Positioned(
+                      top: 85.h,
+                      child: Container(
+                        child: StreamBuilder<List>(
+                            stream: builder.getOrders(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return OrientationBuilder(
+                                    builder: (context, orientation) {
+                                  return GridView.builder(
+                                      itemCount: snapshot.data!.length,
+                                      gridDelegate:
+                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        childAspectRatio: 25 / 20,
+                                      ),
+                                      itemBuilder: (contex, index) {
+                                        return OrderCards(
+                                            snapshot.data![index]);
+                                      });
+                                });
+                              } else {
+                                return noActiveOrders(builder);
+                              }
+                            }),
+                        color: Colors.white,
+                        height: 650.h,
+                        width: MediaQuery.of(context).size.width,
+                      )),
+                ],
+              ));
+        });
   }
 
   Widget noActiveOrders(builder) {

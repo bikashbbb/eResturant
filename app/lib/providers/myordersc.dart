@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class MyOrdersControlls extends GetxController {
+  static bool isgetreqSent = false;
+  static Map activeTables = {};
   @override
   void onInit() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -30,9 +32,15 @@ class MyOrdersControlls extends GetxController {
   }
 
   Stream<List> getOrders() async* {
+    int index = 0;
     yield* Stream.periodic(const Duration(milliseconds: 100), (timer) async {
       var response = await getActiveOrders();
-
+      if (index == 0) {
+        // change the value of isMyorderrequest
+        isgetreqSent = true;
+        update();
+      }
+      index += 1;
       return response;
     }).asyncMap((event) {
       return event;
