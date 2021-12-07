@@ -102,6 +102,7 @@ class _MyOrdersState extends State<MyOrders> {
                                 return OrientationBuilder(
                                     builder: (context, orientation) {
                                   return GridView.builder(
+                                      reverse: true,
                                       itemCount: snapshot.data!.length,
                                       gridDelegate:
                                           const SliverGridDelegateWithFixedCrossAxisCount(
@@ -148,6 +149,7 @@ class _MyOrdersState extends State<MyOrders> {
   Widget OrderCards(Map data) {
     ActiveOrders ordertable = ActiveOrders(data['NetAmount'],
         LocalData.getTablecode(data['TableId']), data['OrderId']);
+    MyOrdersControlls.activeTables.add(data['TableId']);
 
     return Padding(
       padding: EdgeInsets.all(8.0.h),

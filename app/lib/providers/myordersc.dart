@@ -7,9 +7,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+// 17:45
 class MyOrdersControlls extends GetxController {
   static bool isgetreqSent = false;
-  static Map activeTables = {};
+  static Set activeTables = {};
   @override
   void onInit() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);

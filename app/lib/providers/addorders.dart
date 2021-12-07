@@ -2,7 +2,9 @@ import 'package:app/domain/myorders.dart';
 import 'package:app/models/orders.dart';
 import 'package:app/palette/dialogbox.dart';
 import 'package:app/providers/hiveprovider.dart';
+import 'package:app/providers/myordersc.dart';
 import 'package:app/screens/itemcatalog.dart';
+import 'package:app/screens/myorders.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +26,12 @@ class AddOrdersController extends GetxController {
   static List totalOrders = [];
 
   static AddOrdersController get to => Get.find();
+
+  @override
+  void dispose() {
+    clearItems();
+    super.dispose();
+  }
 
   void hallSelected(selected) {
     Hallcode = selected;
@@ -69,8 +77,10 @@ class AddOrdersController extends GetxController {
 
     for (var p in box.get('TableIds')) {
       if (p['HallId'] == halldata[Hallcode]) {
-        tableNo.add(p['TableCode']);
-        tabledata[p['TableCode']] = p['TableId'];
+        if (!MyOrdersControlls.activeTables.contains(p['TableId'])) {
+          tableNo.add(p['TableCode']);
+          tabledata[p['TableCode']] = p['TableId'];
+        }
       }
     }
     return tableNo;
@@ -160,9 +170,11 @@ class AddOrdersController extends GetxController {
           .createOrderbody();
       var response = await sendOrderCreateRequest(body);
 
-      Navigator.of(Get.overlayContext!).pop();
+      Get.back();
+      Get.back();
 
       if (response[0] != 'S' || response[0] != 's') {
+        MyOrdersControlls.activeTables.add(tabledata[tablecode]);
         clearItems();
         isordercreatedSucess('Orders Added Sucessfully');
       } else {
