@@ -54,7 +54,7 @@ class AddOrdersController extends GetxController {
     //String Itemprice = '     Item Price';
     quantity = 'Quantity';
     tax = 'Tax';
-    amount = 0;
+    amount = 0.0;
     totalOrders = [];
     update();
   }
@@ -153,7 +153,9 @@ class AddOrdersController extends GetxController {
   }
 
   void createOrderClicked() async {
-    if (Hallcode == 'Hall Number' || tablecode[0] == 'T' || amount == 0.0) {
+    if (Hallcode == 'Hall Number' ||
+        tablecode[0] == 'T' ||
+        totalOrders.isEmpty) {
       Get.dialog(const AlertDialog(
         title: Text('Please select all the fields...'),
       ));

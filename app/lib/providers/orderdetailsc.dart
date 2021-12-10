@@ -146,7 +146,6 @@ class OrderDetailsControlls extends GetxController {
 
     if (totalOrders[removeItemindex!].OrderItemId != 0) {
       bottomNavbar(bottomnavMessege, false);
-      // to do check if the user has the permission
       if (haspermission()) {
         if (checkuserpermission()) {
           Get.back();
