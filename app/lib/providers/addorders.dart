@@ -4,7 +4,6 @@ import 'package:app/palette/dialogbox.dart';
 import 'package:app/providers/hiveprovider.dart';
 import 'package:app/providers/myordersc.dart';
 import 'package:app/screens/itemcatalog.dart';
-import 'package:app/screens/myorders.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +17,7 @@ class AddOrdersController extends GetxController {
   //String Itemprice = '     Item Price';
   String quantity = 'Quantity';
   String tax = 'Tax';
-  double amount = 0;
+  double amount = 0.0;
 
   // objects
   static var halldata = {};
@@ -154,7 +153,7 @@ class AddOrdersController extends GetxController {
   }
 
   void createOrderClicked() async {
-    if (Hallcode == 'Hall Number' && tablecode[0] == 'T' && amount == 0.0) {
+    if (Hallcode == 'Hall Number' || tablecode[0] == 'T' || amount == 0.0) {
       Get.dialog(const AlertDialog(
         title: Text('Please select all the fields...'),
       ));
