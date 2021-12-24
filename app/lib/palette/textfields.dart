@@ -25,7 +25,9 @@ Widget quantityField(String hinttext, {Controller, isnum = false}) {
     width: 150.w,
     child: TextField(
       controller: Controller,
-      keyboardType: isnum ? TextInputType.number : TextInputType.text,
+      keyboardType: isnum
+          ? const TextInputType.numberWithOptions(decimal: true)
+          : TextInputType.text,
       decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black38, width: 1.0.w),

@@ -27,7 +27,6 @@ class AddOrders extends StatelessWidget {
                     children: [
                       ElevatedButton(
                           onPressed: () {
-                            // TO THE ADD ITems page
                             _.itemSelected();
                           },
                           child: Icon(
@@ -43,7 +42,6 @@ class AddOrders extends StatelessWidget {
                           )),
                       ElevatedButton(
                           onPressed: () {
-                            // TO THE ADD ITems page
                             _.clearItems();
                           },
                           child: Icon(
@@ -59,7 +57,6 @@ class AddOrders extends StatelessWidget {
                           )),
                       ElevatedButton(
                           onPressed: () {
-                            // send add order request
                             _.createOrderClicked();
                           },
                           child: Icon(
@@ -94,7 +91,6 @@ class AddOrders extends StatelessWidget {
                     Padding(
                         padding: EdgeInsets.only(top: 15.h, left: 42.w),
                         child: itemDetails()),
-                    // item price
                     Padding(
                       padding: EdgeInsets.only(top: 15.h, right: 20.w),
                       child: Center(child: orderFields(_.gettotalprice())),
