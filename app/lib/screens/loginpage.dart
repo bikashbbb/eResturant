@@ -35,7 +35,7 @@ class Login extends StatelessWidget {
             // login card
             Center(
                 child: Padding(
-              padding: const EdgeInsets.only(top: 80),
+              padding: EdgeInsets.only(top: 80.h),
               child: LoginForm(context),
             ))
           ],
@@ -47,7 +47,7 @@ class Login extends StatelessWidget {
         init: LoginController(),
         builder: (_) {
           return SizedBox(
-            height: 350.h,
+            height: 370.h,
             width: 300.w,
             child: Card(
               elevation: 3,
