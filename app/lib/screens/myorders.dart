@@ -1,5 +1,4 @@
 import 'package:app/models/orders.dart';
-import 'package:app/palette/buttons.dart';
 import 'package:app/palette/template.dart';
 import 'package:app/palette/textstyles.dart';
 import 'package:app/providers/hiveprovider.dart';
@@ -32,7 +31,7 @@ class _MyOrdersState extends State<MyOrders> {
                       padding: EdgeInsets.only(bottom: 60.h, right: 10.h),
                       child: ElevatedButton(
                         onPressed: () {
-                          Get.to(AddOrders());
+                          Get.to(() => AddOrders());
                         },
                         child: const Icon(Icons.add, color: Colors.white),
                         style: ElevatedButton.styleFrom(
@@ -57,7 +56,8 @@ class _MyOrdersState extends State<MyOrders> {
                             stream: builder.getOrders(),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
-                                MyOrdersControlls.countActiveTables(snapshot.data!);
+                                MyOrdersControlls.countActiveTables(
+                                    snapshot.data!);
                                 return OrientationBuilder(
                                     builder: (context, orientation) {
                                   return GridView.builder(
@@ -99,7 +99,6 @@ class _MyOrdersState extends State<MyOrders> {
                                 style: bold30,
                               ),
                             ),
-                            refreshButton(),
                             Padding(
                                 padding: EdgeInsets.only(left: 100.w),
                                 child: DropdownButton<String>(

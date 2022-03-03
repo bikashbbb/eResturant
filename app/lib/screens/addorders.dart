@@ -1,5 +1,5 @@
-
 import 'package:app/models/orders.dart';
+import 'package:app/palette/buttons.dart';
 import 'package:app/palette/textfields.dart';
 import 'package:app/palette/textstyles.dart';
 import 'package:app/providers/addorders.dart';
@@ -73,76 +73,88 @@ class AddOrders extends StatelessWidget {
               backgroundColor: Colors.white,
               appBar: AppBar(
                 backgroundColor: Colors.orange[300],
-                title: Text(
-                  'Add Orders',
-                  style: bold30,
-                ),
-              ),
-              body: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    // hall number
-                    selectHall(),
-                    selectTable(),
-
-                    Padding(
-                        padding: EdgeInsets.only(top: 15.h, left: 42.w),
-                        child: itemDetails()),
-                    Padding(
-                      padding: EdgeInsets.only(top: 15.h, right: 20.w),
-                      child: Center(child: orderFields(_.gettotalprice())),
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsets.only(top: 15.h, left: 50.w, right: 65.w),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          quantityField(_.quantity,
-                              Controller: _.quantitycontroller, isnum: true),
-                          quantityButton()
-                        ],
+                    Expanded(
+                      child: Text(
+                        'Add Orders',
+                        style: bold30,
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 15.h, right: 20.w),
-                      child: Center(child: orderFields(_.gettotaltax())),
-                    ),
-
-                    const Divider(
-                      height: 26,
-                      color: Colors.black54,
-                      thickness: 1,
-                    ),
-                    // Amount
-                    Padding(
-                      padding: EdgeInsets.only(left: 50.w),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                    refreshButton(_.onRefreshClicked)
+                  ],
+                ),
+              ),
+              body: _.isRefreshing
+                  ? SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Amount :',
-                            style: TextStyle(
-                                color: Colors.black54,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 25),
+                          // hall number
+                          selectHall(),
+                          selectTable(),
+
+                          Padding(
+                              padding: EdgeInsets.only(top: 15.h, left: 42.w),
+                              child: itemDetails()),
+                          Padding(
+                            padding: EdgeInsets.only(top: 15.h, right: 20.w),
+                            child:
+                                Center(child: orderFields(_.gettotalprice())),
                           ),
-                          Flexible(
-                            child: Text(
-                              _.getamount(),
-                              style: const TextStyle(
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 23),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: 15.h, left: 50.w, right: 65.w),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                quantityField(_.quantity,
+                                    Controller: _.quantitycontroller,
+                                    isnum: true),
+                                quantityButton()
+                              ],
                             ),
                           ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 15.h, right: 20.w),
+                            child: Center(child: orderFields(_.gettotaltax())),
+                          ),
+
+                          const Divider(
+                            height: 26,
+                            color: Colors.black54,
+                            thickness: 1,
+                          ),
+                          // Amount
+                          Padding(
+                            padding: EdgeInsets.only(left: 50.w),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Amount :',
+                                  style: TextStyle(
+                                      color: Colors.black54,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 25),
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    _.getamount(),
+                                    style: const TextStyle(
+                                        color: Colors.black54,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 23),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
                         ],
                       ),
                     )
-                  ],
-                ),
-              ));
+                  : const Center(child: CircularProgressIndicator()));
         });
   }
 

@@ -1,5 +1,5 @@
 class HallInfo {
-  String HallCode;
+   String HallCode;
   int HallId;
 
   HallInfo(this.HallCode, this.HallId);

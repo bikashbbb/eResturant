@@ -6,10 +6,10 @@ import 'package:hive/hive.dart';
 class LocalData {
   static var box = Hive.box('appData');
 
-  static String getProductName(int ProductId) {
+  static String getProductName(int productId) {
     var box = Hive.box('subcategory');
     for (var p in box.get('ProductCategoryId')) {
-      if (p['ProductId'] == ProductId) {
+      if (p['ProductId'] == productId) {
         return p['ProductName'];
       }
     }

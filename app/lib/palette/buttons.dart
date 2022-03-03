@@ -1,7 +1,6 @@
 import 'package:app/providers/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:restart_app/restart_app.dart';
 
 Widget loginbutton(var title) {
   return Container(
@@ -56,10 +55,8 @@ Widget itemsbutton(var title) {
       ));
 }
 
-Widget refreshButton() {
+Widget refreshButton(onpressed) {
   return IconButton(
       icon: const Icon(Icons.refresh),
-      onPressed: () {
-       
-      });
+      onPressed: onpressed);
 }

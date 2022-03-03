@@ -36,13 +36,13 @@ class Login extends StatelessWidget {
             Center(
                 child: Padding(
               padding: EdgeInsets.only(top: 80.h),
-              child: LoginForm(context),
+              child: loginForm(context),
             ))
           ],
         ));
   }
 
-  Widget LoginForm(context) {
+  Widget loginForm(context) {
     return GetBuilder<LoginController>(
         init: LoginController(),
         builder: (_) {

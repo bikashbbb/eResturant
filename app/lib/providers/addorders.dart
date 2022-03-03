@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 
 class AddOrdersController extends GetxController {
   var quantitycontroller = TextEditingController();
+  bool isRefreshing = true;
   // hall infos
   String Hallcode = 'Hall Number';
   String tablecode = 'Table Number';
@@ -152,6 +153,16 @@ class AddOrdersController extends GetxController {
     return 'Item price';
   }
 
+  void onRefreshClicked() async {
+    isRefreshing = !isRefreshing;
+    update();
+    List<dynamic> res = await getActiveOrders();
+    MyOrdersControlls.countActiveTables(res);
+    isRefreshing = !isRefreshing;
+
+    update();
+  }
+
   void createOrderClicked() async {
     if (Hallcode == 'Hall Number' ||
         tablecode[0] == 'T' ||
@@ -180,12 +191,6 @@ class AddOrdersController extends GetxController {
         isordercreatedSucess('Orders Added Sucessfully');
       } else {
         isordercreatedSucess('Unknown server error.');
-      }
-
-      void onRefreshClicked() {}
-
-      List getActiveOrders() {
-        return [];
       }
     }
   }
