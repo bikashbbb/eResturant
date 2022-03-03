@@ -2,10 +2,8 @@ import 'package:app/models/orderdetailsm.dart';
 import 'package:app/palette/textfields.dart';
 import 'package:app/palette/textstyles.dart';
 import 'package:app/providers/orderdetailsc.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get.dart';
 
 // change geeting the data thing

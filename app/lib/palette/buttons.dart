@@ -1,6 +1,7 @@
 import 'package:app/providers/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:restart_app/restart_app.dart';
 
 Widget loginbutton(var title) {
   return Container(
@@ -17,7 +18,7 @@ Widget loginbutton(var title) {
               color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 18.sp),
-              //https://erestuarantwebapi20211115232617.azurewebsites.net/api
+          //https://erestuarantwebapi20211115232617.azurewebsites.net/api
         ),
         trailing: LoginController.to.isloading
             ? const CircularProgressIndicator(
@@ -53,4 +54,12 @@ Widget itemsbutton(var title) {
           size: 40.h,
         ),
       ));
+}
+
+Widget refreshButton() {
+  return IconButton(
+      icon: const Icon(Icons.refresh),
+      onPressed: () {
+       
+      });
 }

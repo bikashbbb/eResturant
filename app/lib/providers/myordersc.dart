@@ -48,7 +48,32 @@ class MyOrdersControlls extends GetxController {
     });
   }
 
+  static Stream<List> getOrder() async* {
+    int index = 0;
+    yield* Stream.periodic(const Duration(milliseconds: 100), (timer) async {
+      var response = await getActiveOrders();
+      if (index == 0) {
+        // change the value of isMyorderrequest
+        isgetreqSent = true;
+        //update();
+      }
+      index += 1;
+      return response;
+    }).asyncMap((event) {
+      return event;
+    });
+  }
+
+  //https://erestuarantwebapi20211115232617.azurewebsites.net/api
+
   void logout(BuildContext context) {
     Get.offAll(const Login());
+  }
+
+  /// run this at the stream builder end ..
+  static void countActiveTables(List<dynamic> data) {
+    for (Map p in data) {
+      activeTables.add(p['TableId']);
+    }
   }
 }

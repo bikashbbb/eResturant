@@ -1,4 +1,5 @@
 import 'package:app/models/orders.dart';
+import 'package:app/palette/buttons.dart';
 import 'package:app/palette/template.dart';
 import 'package:app/palette/textstyles.dart';
 import 'package:app/providers/hiveprovider.dart';
@@ -18,6 +19,7 @@ class MyOrders extends StatefulWidget {
 }
 
 class _MyOrdersState extends State<MyOrders> {
+  bool statechanged = false;
   @override
   Widget build(BuildContext context) {
     var controller = Get.put(MyOrdersControlls());
@@ -49,6 +51,37 @@ class _MyOrdersState extends State<MyOrders> {
                 children: [
                   logintemplate(),
                   Positioned(
+                      top: MediaQuery.of(context).padding.top + 50.h,
+                      child: SizedBox(
+                        child: StreamBuilder<List>(
+                            stream: builder.getOrders(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                MyOrdersControlls.countActiveTables(snapshot.data!);
+                                return OrientationBuilder(
+                                    builder: (context, orientation) {
+                                  return GridView.builder(
+                                      reverse: true,
+                                      itemCount: snapshot.data!.length,
+                                      gridDelegate:
+                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        childAspectRatio: 25 / 20,
+                                      ),
+                                      itemBuilder: (contex, index) {
+                                        return orderCards(
+                                            snapshot.data![index]);
+                                      });
+                                });
+                              } else {
+                                return noActiveOrders(builder);
+                              }
+                            }),
+                        height: 650.h,
+                        width: MediaQuery.of(context).size.width,
+                      )),
+                  // streams
+                  Positioned(
                     top: MediaQuery.of(context).padding.top,
                     child: Material(
                       elevation: 2.0,
@@ -66,8 +99,9 @@ class _MyOrdersState extends State<MyOrders> {
                                 style: bold30,
                               ),
                             ),
+                            refreshButton(),
                             Padding(
-                                padding: const EdgeInsets.only(left: 100),
+                                padding: EdgeInsets.only(left: 100.w),
                                 child: DropdownButton<String>(
                                   hint: const Icon(Icons.settings),
                                   onChanged: (selected) {
@@ -91,37 +125,6 @@ class _MyOrdersState extends State<MyOrders> {
                       ),
                     ),
                   ),
-                  // streams
-                  Positioned(
-                      top: 85.h,
-                      child: Container(
-                        child: StreamBuilder<List>(
-                            stream: builder.getOrders(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                return OrientationBuilder(
-                                    builder: (context, orientation) {
-                                  return GridView.builder(
-                                      reverse: true,
-                                      itemCount: snapshot.data!.length,
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        childAspectRatio: 25 / 20,
-                                      ),
-                                      itemBuilder: (contex, index) {
-                                        return OrderCards(
-                                            snapshot.data![index]);
-                                      });
-                                });
-                              } else {
-                                return noActiveOrders(builder);
-                              }
-                            }),
-                        color: Colors.white,
-                        height: 650.h,
-                        width: MediaQuery.of(context).size.width,
-                      )),
                 ],
               ));
         });
@@ -146,11 +149,9 @@ class _MyOrdersState extends State<MyOrders> {
     );
   }
 
-  Widget OrderCards(Map data) {
+  Widget orderCards(Map data) {
     ActiveOrders ordertable = ActiveOrders(data['NetAmount'],
         LocalData.getTablecode(data['TableId']), data['OrderId']);
-    MyOrdersControlls.activeTables.add(data['TableId']);
-
     return Padding(
       padding: EdgeInsets.all(8.0.h),
       child: InkWell(

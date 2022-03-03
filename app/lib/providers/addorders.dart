@@ -181,6 +181,12 @@ class AddOrdersController extends GetxController {
       } else {
         isordercreatedSucess('Unknown server error.');
       }
+
+      void onRefreshClicked() {}
+
+      List getActiveOrders() {
+        return [];
+      }
     }
   }
 }

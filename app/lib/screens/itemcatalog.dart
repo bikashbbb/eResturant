@@ -4,8 +4,7 @@ import 'package:app/providers/itemprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
-
+// updates catalog: 
 class ItemCatalog extends StatelessWidget {
   bool isUpdate;
   ItemCatalog({Key? key, this.isUpdate = false}) : super(key: key);
@@ -19,7 +18,6 @@ class ItemCatalog extends StatelessWidget {
         return Stack(
           children: [
             logintemplate(),
-            // todo: design of foodcatgory on the left
             Positioned(
                 left: 0.h,
                 top: 30.h,
