@@ -156,7 +156,7 @@ class _MyOrdersState extends State<MyOrders> {
       child: InkWell(
         onTap: () {
           OrderDetailsControlls.getOrderobject(data);
-          Get.to(OrderDetailsPage());
+          Get.to(() => OrderDetailsPage());
         },
         child: SizedBox(
             height: 200.h,

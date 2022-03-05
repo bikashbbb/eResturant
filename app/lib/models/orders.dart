@@ -18,6 +18,17 @@ class ItemDetails {
   ItemDetails(this.productCatid, this.productid, this.productprice,
       this.producttax, this.productname, this.quantity, this.amount,
       {this.orderitemid = ''});
+
+  static ItemDetails convert(item) {
+    return ItemDetails(
+        item['ProductCategoryId'],
+        item['ProductId'],
+        double.parse(item['ProductPrice']),
+        double.parse(item['ProductTax']),
+        item['ProductName'],
+        1,
+        0);
+  }
 }
 
 class ActiveOrders {

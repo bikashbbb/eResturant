@@ -23,21 +23,7 @@ class AddOrders extends StatelessWidget {
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ElevatedButton(
-                          onPressed: () {
-                            _.itemSelected();
-                          },
-                          child: Icon(
-                            Icons.add,
-                            color: Colors.white,
-                            size: 30.h,
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            shape: const CircleBorder(),
-                            padding: EdgeInsets.all(20.h),
-                            primary: Colors.green,
-                            onPrimary: Colors.red,
-                          )),
+                      addbutton(_.itemSelected),
                       ElevatedButton(
                           onPressed: () {
                             _.clearItems();
@@ -162,7 +148,7 @@ class AddOrders extends StatelessWidget {
     return ElevatedButton(
       onPressed: () {
         if (controller.quantitycontroller.text != '') {
-          controller.getQuantity();
+          controller.getQuantity(controller.selectedindex);
         }
       },
       child: Icon(
@@ -175,34 +161,38 @@ class AddOrders extends StatelessWidget {
 
   Widget itemDetails() {
     // listile which has listview builder
-    return GetBuilder<AddOrdersController>(
-        init: AddOrdersController(),
-        builder: (builder) {
-          return Container(
-            decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-            width: 280.w,
-            child: ExpansionTile(
-                initiallyExpanded: true,
-                children: [
-                  ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: AddOrdersController.totalOrders.length,
-                      itemBuilder: (cont, index) {
-                        return orderTile(
-                            AddOrdersController.totalOrders[index], index);
-                      })
-                ],
-                title: const Text('Items')),
-          );
-        });
+    return Container(
+      decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+      width: 280.w,
+      child: ExpansionTile(
+          initiallyExpanded: true,
+          children: [
+            ListView.builder(
+                shrinkWrap: true,
+                itemCount: AddOrdersController.totalOrders.length,
+                itemBuilder: (cont, index) {
+                  return orderTile(
+                      AddOrdersController.totalOrders[index], index);
+                })
+          ],
+          title: const Text('Items')),
+    );
   }
 
   Widget orderTile(ItemDetails currentorder, inedex) {
-    // subtitle will have price and tax, leading will have quantity
     return Padding(
       padding: EdgeInsets.only(bottom: 2.h),
       child: ListTile(
-        tileColor: Colors.black12,
+        onLongPress: () {
+          controller.onLOngTap(inedex);
+        },
+        onTap: () {
+          controller.setSeletedIndex = inedex;
+        },
+        // when tapped change the tile color and assign the index
+        tileColor: controller.getSelectedTile == inedex
+            ? Colors.green[200]
+            : Colors.black12,
         title: Text(currentorder.productname),
         trailing: Text(currentorder.productprice.toStringAsFixed(1) +
             ' X ' +

@@ -28,6 +28,8 @@ class OrderInvoiceItem {
       required this.UserId,
       this.productname = '',
       this.amount});
+
+ 
 }
 
 /// list of orderinvoice items

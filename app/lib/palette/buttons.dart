@@ -56,7 +56,21 @@ Widget itemsbutton(var title) {
 }
 
 Widget refreshButton(onpressed) {
-  return IconButton(
-      icon: const Icon(Icons.refresh),
-      onPressed: onpressed);
+  return IconButton(icon: const Icon(Icons.refresh), onPressed: onpressed);
+}
+
+Widget addbutton(onpressed) {
+  return ElevatedButton(
+      onPressed: onpressed,
+      child: Icon(
+        Icons.add,
+        color: Colors.white,
+        size: 30.h,
+      ),
+      style: ElevatedButton.styleFrom(
+        shape: const CircleBorder(),
+        padding: EdgeInsets.all(20.h),
+        primary: Colors.green.withOpacity(0.7),
+        onPrimary: Colors.red,
+      ));
 }

@@ -9,6 +9,12 @@ import 'package:hive/hive.dart';
 import 'package:flutter/material.dart';
 
 class AddOrdersController extends GetxController {
+  @override
+  void onInit() {
+    totalOrders.clear();
+    super.onInit();
+  }
+
   var quantitycontroller = TextEditingController();
   bool isRefreshing = true;
   // hall infos
@@ -19,6 +25,7 @@ class AddOrdersController extends GetxController {
   String quantity = 'Quantity';
   String tax = 'Tax';
   double amount = 0.0;
+  late int selectedindex;
 
   // objects
   static var halldata = {};
@@ -27,10 +34,21 @@ class AddOrdersController extends GetxController {
 
   static AddOrdersController get to => Get.find();
 
-  @override
-  void dispose() {
-    clearItems();
-    super.dispose();
+  get getSelectedTile {
+    if (totalOrders.length == 1) {
+      selectedindex = totalOrders.length - 1;
+    }
+    return selectedindex;
+  }
+
+  void onLOngTap(int index) {
+    totalOrders.removeAt(index);
+    update();
+  }
+
+  set setSeletedIndex(int tappedindex) {
+    selectedindex = tappedindex;
+    update();
   }
 
   void hallSelected(selected) {
@@ -56,7 +74,7 @@ class AddOrdersController extends GetxController {
     quantity = 'Quantity';
     tax = 'Tax';
     amount = 0.0;
-    totalOrders = [];
+    totalOrders.clear();
     update();
   }
 
@@ -86,31 +104,19 @@ class AddOrdersController extends GetxController {
     return tableNo;
   }
 
-  void getIteminfo(
-      {required productname,
-      required profuctid,
-      required productcatid,
-      required productprice,
-      required producttax}) {
-    // save the list of response
-    var amount = double.parse(productprice) +
-        (double.parse(productprice) * double.parse(producttax) / 100);
-    totalOrders.add(ItemDetails(
-        productcatid,
-        profuctid,
-        double.parse(productprice),
-        double.parse(producttax),
-        productname,
-        1.0,
-        amount));
+  void getIteminfo(ItemDetails itemdetails) {
+    var amount = itemdetails.productprice +
+        (itemdetails.productprice * itemdetails.producttax / 100);
+    itemdetails.amount = amount;
+    totalOrders.add(itemdetails);
     update();
-    Get.back(closeOverlays: true);
+    //Get.back(closeOverlays: true);
   }
 
-  void getQuantity() {
+  void getQuantity(int selectedItem) {
     /// takes in product price and returns the
     if (totalOrders.isNotEmpty) {
-      var objecttochange = totalOrders[totalOrders.length - 1];
+      var objecttochange = totalOrders[selectedItem];
       var quantity = double.parse(quantitycontroller.text);
       objecttochange.quantity = quantity;
       objecttochange.amount = (objecttochange.productprice +
@@ -154,8 +160,10 @@ class AddOrdersController extends GetxController {
   }
 
   void onRefreshClicked() async {
+    clearItems();
     isRefreshing = !isRefreshing;
     update();
+
     List<dynamic> res = await getActiveOrders();
     MyOrdersControlls.countActiveTables(res);
     isRefreshing = !isRefreshing;

@@ -1,9 +1,20 @@
+import 'package:app/models/orders.dart';
 import 'package:app/providers/addorders.dart';
 import 'package:app/providers/orderdetailsc.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
 class ItemController extends GetxController {
+  @override
+  void dispose() {
+    allOrderIds.clear();
+    _itemOrdering.clear();
+    super.dispose();
+  }
+
+  /// hold all the product ids that hasbeen sleected ..
+  Set<int> allOrderIds = {};
+  static Map<int, int> _itemOrdering = {};
   static ItemController get to => Get.find();
 
   var selectedindex = 0;
@@ -35,6 +46,8 @@ class ItemController extends GetxController {
   void subCategorySelected(item, {isupdated}) {
     OrderDetailsControlls controller = Get.put(OrderDetailsControlls());
     var con = Get.put(AddOrdersController());
+    ItemDetails obj = ItemDetails.convert(item);
+    int id = obj.productid;
     if (isupdated) {
       controller.getIteminfo(
           productname: item['ProductName'],
@@ -42,13 +55,46 @@ class ItemController extends GetxController {
           producttax: item['ProductTax'],
           productcatid: item['ProductCategoryId'],
           profuctid: item['ProductId']);
+      addOrderId(id, funcs: update);
     } else {
-      con.getIteminfo(
-          productname: item['ProductName'],
-          productprice: item['ProductPrice'],
-          producttax: item['ProductTax'],
-          productcatid: item['ProductCategoryId'],
-          profuctid: item['ProductId']);
+      if (isSelected(id)) {
+        unselectitem(id);
+      } else {
+        con.getIteminfo(obj);
+        addOrderId(id, funcs: update);
+      }
     }
+  }
+
+  void addOrderId(int pId, {funcs}) {
+    allOrderIds.add(pId);
+    funcs();
+    additemInIndex(pId);
+  }
+
+  /// true if slected else, false
+  bool isSelected(int pId) {
+    return allOrderIds.contains(pId);
+  }
+
+  void additemInIndex(int pId) {
+    _itemOrdering[pId] = AddOrdersController.totalOrders.length - 1;
+  }
+
+  /// removes the item from the list,
+  void unselectitem(int id) {
+    allOrderIds.remove(id);
+    update();
+    removeItemFlist(_itemOrdering[id]!);
+    removeitemInIndex(id);
+  }
+
+  void removeitemInIndex(int pId) {
+    _itemOrdering.remove(pId);
+  }
+
+  void removeItemFlist(int index) {
+    AddOrdersController.totalOrders.removeAt(index);
+    //update();
   }
 }

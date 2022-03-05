@@ -49,3 +49,8 @@ Widget logintemplate() {
     ],
   );
 }
+
+Icon checkicon = const Icon(
+  Icons.check_circle,
+  color: Colors.green,
+);

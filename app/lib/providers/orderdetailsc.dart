@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:app/domain/myorders.dart';
 import 'package:app/models/orderdetailsm.dart';
 import 'package:app/models/orders.dart';
@@ -13,7 +12,7 @@ class OrderDetailsControlls extends GetxController {
   TextEditingController quantityControll = TextEditingController();
 
   static CreateOrderBody? items;
-  List<OrderInvoiceItem> totalOrders = [];
+  static List<OrderInvoiceItem> totalOrders = [];
   String quantity = 'Quantity';
   int? removeItemindex;
   int? tappedItem;
@@ -100,7 +99,7 @@ class OrderDetailsControlls extends GetxController {
         amount: amount));
     items!.totalItems += 1;
     update();
-    Get.back(closeOverlays: true);
+    //Get.back(closeOverlays: true);
   }
 
   void itemTapped(int index) {

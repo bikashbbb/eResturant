@@ -1,10 +1,12 @@
+import 'package:app/palette/buttons.dart';
 import 'package:app/palette/template.dart';
 import 'package:app/palette/textstyles.dart';
 import 'package:app/providers/itemprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-// updates catalog: 
+
+// updates catalog:
 class ItemCatalog extends StatelessWidget {
   bool isUpdate;
   ItemCatalog({Key? key, this.isUpdate = false}) : super(key: key);
@@ -20,7 +22,7 @@ class ItemCatalog extends StatelessWidget {
             logintemplate(),
             Positioned(
                 left: 0.h,
-                top: 30.h,
+                top: MediaQuery.of(context).padding.top,
                 child: Container(
                   width: 120.w,
                   color: Colors.orange[300],
@@ -65,6 +67,14 @@ class ItemCatalog extends StatelessWidget {
                         return subCategory(controller.getSubcategory(), index);
                       }),
                 )),
+            Positioned(
+                bottom: 30.h,
+                left: 20.w,
+                child: controller.allOrderIds.isEmpty
+                    ? const SizedBox()
+                    : addbutton(() {
+                        Get.back();
+                      }))
           ],
         );
       },
@@ -98,7 +108,8 @@ class ItemCatalog extends StatelessWidget {
 
   Widget subCategory(item, index) {
     var controller = Get.put(ItemController());
-
+    ItemController obj = Get.find();
+// here
     return Padding(
         padding: EdgeInsets.only(bottom: 5.h, right: 3.w),
         child: Material(
@@ -109,17 +120,31 @@ class ItemCatalog extends StatelessWidget {
                 controller.subCategorySelected(item[index],
                     isupdated: isUpdate);
               },
-              title: Row(
+              title: Stack(
+                clipBehavior: Clip.none,
                 children: [
-                  Expanded(
-                    child: Text(
-                      item[index]['ProductName'],
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 15.sp),
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          item[index]['ProductName'],
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 15.sp),
+                        ),
+                      ),
+                    ],
                   ),
+                  Positioned(
+                      left: 45.w,
+                      top: 30.h,
+                      bottom: 0,
+                      right: 0.w,
+                      child: obj.isSelected(item[index][
+                              "ProductId"]) //isSelected(item[index]["ProductId"])
+                          ? checkicon
+                          : const SizedBox())
                 ],
               )),
         ));
