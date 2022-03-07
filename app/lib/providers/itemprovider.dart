@@ -95,6 +95,6 @@ class ItemController extends GetxController {
 
   void removeItemFlist(int index) {
     AddOrdersController.totalOrders.removeAt(index);
-    //update();
+    update();
   }
 }

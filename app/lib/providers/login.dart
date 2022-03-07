@@ -12,6 +12,7 @@ class LoginController extends GetxController {
   static var passwordControlls = TextEditingController();
   // login button
   var isloading = false;
+  // url:
 
   static LoginController get to => Get.find();
 
