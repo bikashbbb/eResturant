@@ -41,7 +41,7 @@ class LocalData {
   }
 
   static getBaseUrl() {
-    return box.get('userdata')['baseUrl'];
+    return box.get('baseid');
   }
 
   static getUid() {
@@ -51,12 +51,19 @@ class LocalData {
 
   static var responseurl = getBaseUrl();
   static void saveProductData() async {
-    /// saves the product detail from the api to hive
     var resposne = await product('$responseurl/master/getproductcategories');
     var box = Hive.box('appData');
     await box.put('productcategory', resposne);
     // save subcategory
     getsubCategory();
+  }
+
+  static void setBaseid(String url, Box box) async {
+    await box.put("baseid", url);
+  }
+
+  static String setCombineBaseUrl(String ip, String port) {
+    return "https://$ip:$port/api";
   }
 
   static void getsubCategory() async {

@@ -58,16 +58,16 @@ class Login extends StatelessWidget {
                     height: 20.h,
                   ),
                   textfield('Base Url',
-                      Controller: LoginController.baseurlControlls),
+                      controller: LoginController.baseurlControlls),
                   Padding(
                     padding: EdgeInsets.only(top: 25.h),
                     child: textfield('Username',
-                        Controller: LoginController.usernameControlls),
+                        controller: LoginController.usernameControlls),
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 25.h),
                     child: textfield('Password',
-                        Controller: LoginController.passwordControlls),
+                        controller: LoginController.passwordControlls),
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 30.h, left: 120.w),

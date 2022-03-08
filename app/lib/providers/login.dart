@@ -10,11 +10,22 @@ class LoginController extends GetxController {
   static var baseurlControlls = TextEditingController();
   static var usernameControlls = TextEditingController();
   static var passwordControlls = TextEditingController();
-  // login button
   var isloading = false;
-  // url:
 
   static LoginController get to => Get.find();
+  @override
+  void onInit() {
+    checkBaseUrl();
+    super.onInit();
+  }
+
+  void checkBaseUrl() {
+    if (LocalData.box.containsKey("baseid")) {
+      baseurlControlls.text = LocalData.getBaseUrl();
+    } else {
+      baseurlControlls.text = baseUrl;
+    }
+  }
 
   void loginTapped(BuildContext context) async {
     if (baseurlControlls.text == '' ||
@@ -32,12 +43,13 @@ class LoginController extends GetxController {
           await box.put('userdata', {
             'username': usernameControlls.text,
             'password': passwordControlls.text,
-            'baseUrl': baseurlControlls.text,
             'Userid': responsebody['UserId'].toString()
           });
+          LocalData.setBaseid(baseurlControlls.text, box);
+
           // save data
           LocalData.saveProductData();
-          Get.off(const MyOrders());
+          Get.off(() => const MyOrders());
         } else {
           isloading = false;
           update();

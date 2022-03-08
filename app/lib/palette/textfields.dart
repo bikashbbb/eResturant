@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-Widget textfield(String hinttext, {Controller, isnum = false}) {
+Widget textfield(String hinttext, {controller, isnum = false}) {
   return SizedBox(
     width: 280.w,
     child: TextField(
       keyboardType: isnum ? TextInputType.number : TextInputType.text,
-      controller: Controller,
+      controller: controller,
       decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black38, width: 1.0.w),

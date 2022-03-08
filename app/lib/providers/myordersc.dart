@@ -1,7 +1,9 @@
 import 'package:app/domain/myorders.dart';
 import 'package:app/models/orders.dart';
+import 'package:app/palette/buttons.dart';
 import 'package:app/palette/dialogbox.dart';
 import 'package:app/providers/hiveprovider.dart';
+import 'package:app/providers/login.dart';
 import 'package:app/screens/loginpage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +15,8 @@ class MyOrdersControlls extends GetxController {
   static Set activeTables = {};
   @override
   void onInit() {
+    LoginController.usernameControlls.clear();
+    LoginController.passwordControlls.clear();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     super.onInit();
   }
@@ -20,6 +24,10 @@ class MyOrdersControlls extends GetxController {
   static var iscompleted = false;
 
   List<ActiveOrders> activeorderlist = [];
+
+  onSettings(BuildContext con) {
+    return portNipDialog(con);
+  }
 
   void formatData(context) {
     iscompleted = false;

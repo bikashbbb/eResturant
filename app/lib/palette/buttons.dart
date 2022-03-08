@@ -1,6 +1,10 @@
+import 'package:app/palette/textfields.dart';
+import 'package:app/providers/hiveprovider.dart';
 import 'package:app/providers/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:get/instance_manager.dart';
 
 Widget loginbutton(var title) {
   return Container(
@@ -75,14 +79,41 @@ Widget addbutton(onpressed) {
       ));
 }
 
-class IpPortSet extends StatelessWidget {
-  const IpPortSet({ Key? key }) : super(key: key);
+portNipDialog(BuildContext con) {
+  return showDialog(
+      context: con,
+      builder: (con) {
+        return AlertDialog(
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              textfield("Ip adress",
+                  controller: LoginController.usernameControlls),
+              SizedBox(
+                height: 5.h,
+              ),
+              textfield("Port:", controller: LoginController.passwordControlls),
+              dailogButtonConfirm(() {
+                LocalData.setBaseid(
+                    LocalData.setCombineBaseUrl(
+                        LoginController.usernameControlls.text,
+                        LoginController.passwordControlls.text),
+                    LocalData.box);
+                Get.back();
+              }, bName: "Done !")
+            ],
+          ),
+        );
+      });
+}
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      
-      
-    );
-  }
+Widget dailogButtonConfirm(onpressed, {String bName = 'Try Again?'}) {
+  return MaterialButton(
+    onPressed: onpressed,
+    child: Text(
+      bName,
+      style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+    ),
+  );
 }

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:app/providers/login.dart';
 import 'package:http/http.dart' as https;
 
-//String host;
+String baseUrl = "https://192.168.1.3:8888/api";
 sendLoginRequest() async {
   var requesturl = LoginController.baseurlControlls.text;
   try {

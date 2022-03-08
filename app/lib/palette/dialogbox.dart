@@ -1,3 +1,4 @@
+import 'package:app/palette/buttons.dart';
 import 'package:app/palette/textstyles.dart';
 import 'package:app/providers/myordersc.dart';
 import 'package:app/providers/orderdetailsc.dart';
@@ -15,16 +16,9 @@ dialogbox(BuildContext context, String title) {
             style: const TextStyle(color: Colors.black),
           ),
           actions: [
-            MaterialButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'Try Again?',
-                style:
-                    TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-              ),
-            )
+            dailogButtonConfirm(() {
+              Navigator.pop(context);
+            })
           ],
         );
       });

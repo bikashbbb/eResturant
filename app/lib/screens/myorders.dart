@@ -1,4 +1,5 @@
 import 'package:app/models/orders.dart';
+import 'package:app/palette/buttons.dart';
 import 'package:app/palette/template.dart';
 import 'package:app/palette/textstyles.dart';
 import 'package:app/providers/hiveprovider.dart';
@@ -9,6 +10,7 @@ import 'package:app/screens/orderdetails.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+
 // next one is making a port update
 class MyOrders extends StatefulWidget {
   const MyOrders({Key? key}) : super(key: key);
@@ -104,15 +106,21 @@ class _MyOrdersState extends State<MyOrders> {
                                 child: DropdownButton<String>(
                                   hint: const Icon(Icons.settings),
                                   onChanged: (selected) {
-                                    if (selected != 'Logout') {
+                                    if (selected![0] == 'L') {
+                                      controller.logout(context);
+                                    } else if (selected[0] == 'F') {
                                       controller.formatData(context);
                                     } else {
-                                      controller.logout(context);
+                                      controller.onSettings(context);
+                                      //IpPortSet();
                                     }
                                   },
-                                  items: <String>['Logout', 'Format data']
-                                      .map<DropdownMenuItem<String>>(
-                                          (String value) {
+                                  items: <String>[
+                                    'Logout',
+                                    'Format data',
+                                    "Setting"
+                                  ].map<DropdownMenuItem<String>>(
+                                      (String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
                                       child: Text(value),
